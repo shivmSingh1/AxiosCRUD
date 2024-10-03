@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 import { Button, Container } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
-import { getPost } from './services/axios.services';
+import { deletePost, getPost } from './services/axios.services';
 import { useEffect, useState } from 'react';
 
 function App() {
@@ -19,6 +19,24 @@ function App() {
     getPostData();
   }, [])
 
+  // ---------------------delete post---------------------
+
+  const handleDelete = async (id) => {
+    // sending delete request
+    const res = await deletePost(id)
+    // console.log(res)
+
+    // updating ui
+    if (res.status === 200) {
+      const updatedData = data.filter((currPost) => {
+        return currPost.id !== id
+      })
+      setData(updatedData)
+    }
+  }
+
+
+
   return (
     <>
       <Container className='my-5'>
@@ -29,13 +47,13 @@ function App() {
               return (
                 <Card className='mb-4 border-0 shadow' style={{ width: '18rem', }} key={currPost.id} >
                   <Card.Body>
-                    <Card.Title>User: {currPost.userId}</Card.Title>
+                    <Card.Title>PostId: {currPost.id} User: {currPost.userId}</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">{currPost.title}</Card.Subtitle>
                     <Card.Text>
                       {currPost.body}
                     </Card.Text>
                     <Button variant='success'>Edit</Button>
-                    <Button className='ms-2' variant='danger'>Delete</Button>
+                    <Button className='ms-2' variant='danger' onClick={() => handleDelete(currPost.id)}>Delete</Button>
                   </Card.Body>
                 </Card>
               )
